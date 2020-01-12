@@ -31,8 +31,8 @@ def skipgram(centerWord, contextWord, inputMatrix, outputMatrix):
     for prob in dsoftmax:
         prob[contextWord] -= 1
 
-    grad_out = torch.mm(dsoftmax.t(), hidden_layer)
     grad_in = torch.mm(dsoftmax, outputMatrix)
+    grad_out = torch.mm(dsoftmax.t(), hidden_layer)
 
     return loss, grad_in, grad_out
 
