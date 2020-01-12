@@ -200,17 +200,29 @@ def main():
     #Make tuples of (centerword, contextwords) for training
     train_set = []
     window_size = 5
-    for j in range(len(words)):
-        if j<window_size:
-            contextlist = [0 for _ in range(window_size-j)] + [w2i[words[k]] for k in range(j)] + [w2i[words[j+k+1]] for k in range(window_size)]
-            train_set.append((w2i[words[j]],contextlist))
-        elif j>=len(words)-window_size:
-            contextlist = [w2i[words[j-k-1]] for k in range(window_size)] + [w2i[words[len(words)-k-1]] for k in range(len(words)-j-1)] + [0 for _ in range(j+window_size-len(words)+1)]
-            train_set.append((w2i[words[j]],contextlist))
-        else:
-            contextlist = [w2i[words[j-k-1]] for k in range(window_size)] + [w2i[words[j+k+1]] for k in range(window_size)]
-            train_set.append((w2i[words[j]],[w2i[words[j-1]],w2i[words[j+1]]]))
+        if mode=="CBOW":
+        for j in range(len(words)):
+            if j<window_size:
+                contextlist = [0 for _ in range(window_size-j)] + [w2i[words[k]] for k in range(j)] + [w2i[words[j+k+1]] for k in range(window_size)]
+                train_set.append((contextlist,w2i[words[j]]))
+            elif j>=len(words)-window_size:
+                contextlist = [w2i[words[j-k-1]] for k in range(window_size)] + [w2i[words[len(words)-k-1]] for k in range(len(words)-j-1)] + [0 for _ in range(j+window_size-len(words)+1)]
+                train_set.append((contextlist,w2i[words[j]]))
+            else:
+                contextlist = [w2i[words[j-k-1]] for k in range(window_size)] + [w2i[words[j+k+1]] for k in range(window_size)]
+                train_set.append((contextlist,w2i[words[j]]))
+    if mode=="SG":
+        for j in range(len(words)):
+            if j<window_size:
+                samples = [(w2i[words[j]], 0) for _ in range(window_size-j)] + [(w2i[words[j]], w2i[words[k]]) for k in range(j)] + [(w2i[words[j]], w2i[words[j+k+1]]) for k in range(window_size)]
+                train_set+=samples
 
+            elif j>=len(words)-window_size:
+                samples = [(w2i[words[j]],w2i[words[j-k-1]]) for k in range(window_size)] + [(w2i[words[j]],w2i[words[len(words)-k-1]]) for k in range(len(words)-j-1)] + [(w2i[words[j]],0) for _ in range(j+window_size-len(words)+1)]
+                train_set+=samples
+            else:
+                samples = [(w2i[words[j]], w2i[words[j-k-1]]) for k in range(window_size)] + [(w2i[words[j]], w2i[words[j+k+1]]) for k in range(window_size)]
+                train_set+=samples
     print("Vocabulary size")
     print(len(w2i))
     print()
