@@ -94,7 +94,7 @@ def word2vec_trainer(train_seq, numwords, stats, mode="CBOW", dimension=100, lea
         for inputs, outputs in train_seq:
             i += 1
             if mode == "CBOW":
-                L, G_in, G_out = CBOW(inputs, outputs, W_in, W_out)
+                L, G_in, G_out = CBOW(outputs, inputs, W_in, W_out)
 
                 W_in[inputs] -= learning_rate * G_in
                 W_out -= learning_rate * G_out
