@@ -122,8 +122,8 @@ def word2vec_trainer(train_seq, numwords, stats, mode="CBOW", dimension=100, lea
 def sim(testword, word2ind, ind2word, matrix):
     length = (matrix * matrix).sum(1) ** 0.5
     wi = word2ind[testword]
-    inputVector = matrix[wi].reshape(1, -1) / length[wi]
-    sim = (inputVector @ matrix.t())[0] / length
+    L2norm = matrix[wi].reshape(1, -1) / length[wi]
+    sim = torch.mm(L2norm, matrix.t())[0] / length
     values, indices = sim.squeeze().topk(5)
 
     print()
